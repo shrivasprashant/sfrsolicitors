@@ -2,7 +2,7 @@ import Button from "@/components/ui/Button";
 
 import Reveal from "@/components/ui/Reveal";
 
-import ScalesIllustration from "@/components/ui/ScalesIllustration";
+import ScalesIllustration from "@/components/icons/ScalesIllustration";
 
 import PracticeAreaNav from "@/components/sections/PracticeAreaNav";
 
