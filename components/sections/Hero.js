@@ -2,7 +2,9 @@ import Button from "@/components/ui/Button";
 
 import Reveal from "@/components/ui/Reveal";
 
-import ScalesIllustration from "@/components/icons/ScalesIllustration";
+import ScalesIllustration from "@/components/ui/ScalesIllustration";
+
+import Hero3D from '@/components/ui/Hero3D';
 
 import PracticeAreaNav from "@/components/sections/PracticeAreaNav";
 
@@ -89,7 +91,7 @@ export default function Hero() {
         </div>
 
         {/* Illustration */}
-        <Reveal
+        {/* <Reveal
           variant="fade"
           delay={120}
           className="flex items-center justify-center max-md:order-first"
@@ -109,7 +111,8 @@ export default function Hero() {
         "
             />
           </div>
-        </Reveal>
+        </Reveal> */}
+        <Hero3D />
 
       </div>
 

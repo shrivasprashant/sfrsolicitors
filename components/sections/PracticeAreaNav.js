@@ -8,7 +8,7 @@ import { handleTiltMove, handleTiltLeave } from "@/lib/tilt";
 export default function PracticeAreaNav() {
   return (
     <nav aria-label="Practice areas" className="mt-14 border-t border-paper-line">
-      <div className="grid grid-cols-1 divide-y divide-paper-line sm:grid-cols-2 sm:divide-y-0 md:grid-cols-4">
+      <div className="grid grid-cols-1 divide-y divide-paper-line sm:grid-cols-2 sm:divide-y-0 md:grid-cols-5">
         {practiceAreas.map((area, index) => (
           <Reveal key={area.id} delay={index * 70}>
             <Link
