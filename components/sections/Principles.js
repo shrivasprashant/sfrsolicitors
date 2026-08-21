@@ -7,7 +7,7 @@ import { handleTiltMove, handleTiltLeave } from "@/lib/tilt";
 
 export default function Principles() {
   return (
-    <section className="bg-parchment px-5 py-24 sm:px-8">
+    <section className="bg-white px-5 py-24 sm:px-8 border-t border-paper-line">
       <div className="mx-auto max-w-wrap">
         <Reveal className="mb-16 text-center">
           <Eyebrow>Why Choose Us</Eyebrow>

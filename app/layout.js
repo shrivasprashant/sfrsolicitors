@@ -1,6 +1,6 @@
 import { Nunito } from "next/font/google";
 import "./globals.css";
-import CustomCursor from "@/components/ui/CustomCursor";
+
 
 const nunito = Nunito({
   subsets: ["latin"],
@@ -43,7 +43,6 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={nunito.variable}>
       <body>
-        <CustomCursor />
         {children}
       </body>
     </html>

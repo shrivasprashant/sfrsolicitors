@@ -58,6 +58,15 @@ const paths = {
       <path d="M9 33 C15 30 33 30 39 33" stroke="currentColor" strokeWidth="1.6" />
     </>
   ),
+  ma: (
+    <>
+      <circle cx="24" cy="24" r="18" stroke="currentColor" strokeWidth="2.2" />
+      <ellipse cx="24" cy="24" rx="8" ry="18" stroke="currentColor" strokeWidth="1.8" />
+      <line x1="6" y1="24" x2="42" y2="24" stroke="currentColor" strokeWidth="2" />
+      <path d="M15 17 L24 24 L33 17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M15 31 L24 24 L33 31" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </>
+  ),
 };
 
 export default function PracticeAreaMotif({ icon, className = "" }) {

@@ -10,7 +10,7 @@ export default function CaseFile({ area }) {
       className={`relative border-t px-5 py-20 sm:px-8 ${
         isDark
           ? "border-white/[0.12] bg-slate text-parchment shadow-[inset_0_16px_28px_-28px_rgba(0,0,0,0.5)]"
-          : "border-paper-line bg-parchment text-ink"
+          : "border-paper-line bg-white text-ink"
       }`}
     >
       <div className="mx-auto grid max-w-wrap gap-10 md:grid-cols-[280px_1fr] md:gap-14">
