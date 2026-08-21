@@ -1,0 +1,289 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-parchment text-ink font-body antialiased;
+    font-size: 16px;
+    line-height: 1.6;
+  }
+
+  h1,
+  h2,
+  h3 {
+    @apply font-display font-extrabold;
+    letter-spacing: -0.005em;
+  }
+
+  :focus-visible {
+    outline: 2.5px solid theme("colors.oxblood.DEFAULT");
+    outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  /* Accordion panel height/opacity transition — kept out of Tailwind's
+     built-in animation set since it needs a dynamic max-height driven
+     by React state rather than a fixed keyframe. */
+  .faq-answer {
+    display: grid;
+    grid-template-rows: 0fr;
+    opacity: 0;
+    transition: grid-template-rows 250ms ease, opacity 200ms ease;
+  }
+
+  .faq-answer.is-open {
+    grid-template-rows: 1fr;
+    opacity: 1;
+  }
+
+  .faq-answer > div {
+    overflow: hidden;
+  }
+
+  /*
+   * Tilt + cursor-glow cards.
+   * --tilt-rx/--tilt-ry/--glow-x/--glow-y are written directly to the
+   * element's inline style by lib/tilt.js on pointermove, so React never
+   * re-renders on mouse movement. The 3D tilt itself is only enabled
+   * inside a hover-capable, fine-pointer media query so touch devices
+   * simply get the flat card with its ordinary hover state.
+   */
+  .tilt-card {
+    --tilt-rx: 0deg;
+    --tilt-ry: 0deg;
+    --glow-x: 50%;
+    --glow-y: 50%;
+    position: relative;
+    transition: transform 500ms theme("transitionTimingFunction.spring"),
+      box-shadow 350ms ease;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .tilt-card {
+      transform: perspective(1000px) rotateX(var(--tilt-rx)) rotateY(var(--tilt-ry));
+      transform-style: preserve-3d;
+    }
+  }
+
+  .tilt-card-glow::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(
+      circle at var(--glow-x) var(--glow-y),
+      rgba(169, 133, 84, 0.16),
+      transparent 62%
+    );
+    opacity: 0;
+    transition: opacity 350ms ease;
+    pointer-events: none;
+  }
+
+  .tilt-card-glow.tilt-card-glow--dark::before {
+    background: radial-gradient(
+      circle at var(--glow-x) var(--glow-y),
+      rgba(169, 133, 84, 0.22),
+      transparent 62%
+    );
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .tilt-card-glow:hover::before {
+      opacity: 1;
+    }
+  }
+
+  /* Button click ripple — position comes from the click coordinates
+     written inline by the Button component, not always the center. */
+  .btn-ripple-dot {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    margin-left: -4px;
+    margin-top: -4px;
+    border-radius: 9999px;
+    background: currentColor;
+    opacity: 0.4;
+    transform: scale(0);
+    animation: ripple-expand 600ms ease-out forwards;
+    pointer-events: none;
+  }
+
+  @keyframes ripple-expand {
+    to {
+      transform: scale(26);
+      opacity: 0;
+    }
+  }
+
+  /* Ambient float for decorative hero art. motion-safe: is a built-in
+     Tailwind variant, so this already no-ops under prefers-reduced-motion. */
+  @keyframes gentle-float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  .animate-gentle-float {
+    animation: gentle-float 6.5s ease-in-out infinite;
+  }
+
+  /* Scroll-reveal base state. Reveal.js toggles data-visible; the
+     global reduced-motion override earlier in this file collapses the
+     transition duration to ~0 so content still appears, just without
+     the slide/scale. */
+  .reveal {
+    opacity: 0;
+    transform: translateY(22px) scale(0.99);
+    transition: opacity 700ms theme("transitionTimingFunction.spring"),
+      transform 700ms theme("transitionTimingFunction.spring");
+    will-change: opacity, transform;
+  }
+
+  .reveal[data-variant="fade"] {
+    transform: none;
+  }
+
+  .reveal[data-visible="true"] {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  /* ─── Custom Cursor ────────────────────────────────────────────────────── */
+  /* Only active on devices that have a real mouse pointer */
+  @media (hover: hover) and (pointer: fine) {
+    /* Hide native cursor everywhere */
+    *, *::before, *::after { cursor: none !important; }
+
+    .cursor-dot,
+    .cursor-ring,
+    .cursor-label {
+      position: fixed;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 9999;
+      will-change: transform;
+    }
+
+    /* Small filled dot — snaps instantly */
+    .cursor-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #7a2e2e;
+      transition: width 200ms ease, height 200ms ease, opacity 200ms ease, background 200ms ease;
+    }
+
+    /* Hollow ring — lags (set in JS via RAF) */
+    .cursor-ring {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 2px solid #7a2e2e;
+      background: transparent;
+      opacity: 0.55;
+      transition: width 260ms cubic-bezier(0.22, 1, 0.36, 1),
+                  height 260ms cubic-bezier(0.22, 1, 0.36, 1),
+                  border-radius 260ms ease,
+                  background 260ms ease,
+                  opacity 260ms ease,
+                  border-color 260ms ease;
+    }
+
+    /* Text label inside ring (star, arrow etc.) */
+    .cursor-label {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: #fff;
+      opacity: 0;
+      transition: opacity 200ms ease;
+    }
+
+    /* ── LINK / BUTTON state ── */
+    .cursor-ring[data-state="link"] {
+      width: 52px;
+      height: 52px;
+      background: rgba(122, 46, 46, 0.18);
+      border-color: #7a2e2e;
+      opacity: 1;
+    }
+    .cursor-dot[data-state="link"] {
+      width: 4px;
+      height: 4px;
+      opacity: 0.4;
+    }
+
+    /* ── TEXT state — squish ring into thin bar ── */
+    .cursor-ring[data-state="text"] {
+      width: 3px;
+      height: 28px;
+      border-radius: 2px;
+      background: #7a2e2e;
+      border-color: transparent;
+      opacity: 0.9;
+    }
+    .cursor-dot[data-state="text"] {
+      opacity: 0;
+    }
+
+    /* ── EXPLORE state (over SVG/images) ── */
+    .cursor-ring[data-state="explore"] {
+      width: 56px;
+      height: 56px;
+      background: rgba(122, 46, 46, 0.10);
+      border: 1.5px solid rgba(122, 46, 46, 0.5);
+      opacity: 1;
+    }
+    .cursor-dot[data-state="explore"] {
+      opacity: 0;
+    }
+    .cursor-label[data-state="explore"] {
+      opacity: 1;
+      color: #7a2e2e;
+      font-size: 18px;
+    }
+
+    /* ── DRAG state (over tilt cards) ── */
+    .cursor-ring[data-state="drag"] {
+      width: 48px;
+      height: 48px;
+      background: rgba(169, 133, 84, 0.12);
+      border-color: #a98554;
+      opacity: 1;
+    }
+    .cursor-dot[data-state="drag"] {
+      background: #a98554;
+    }
+  }
+}
+
